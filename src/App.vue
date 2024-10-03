@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import { useUserStore } from './store/user'
+// import HelloWorld from './components/HelloWorld.vue'
+
+const userStore = useUserStore()
 </script>
 
 <template>
   <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    {{ userStore.age }}
+    计算属性:{{ userStore.doubleAge }} 计算属性:{{ userStore.getNameAndAge }}
+    <button @click="userStore.saveName('sadasd')">修改名字</button>
   </div>
-  <HelloWorld msg="Vite + Vue" />
+  <!-- <HelloWorld msg="Vite + Vue" /> -->
 </template>
 
 <style scoped>
