@@ -2,7 +2,8 @@
 import TencentCloudChat, { ChatSDK } from '@tencentcloud/chat'
 import TIMUploadPlugin from 'tim-upload-plugin'
 // import TIMPushAndroidConfig from './timpush-configs.json' // IM控制台 > 推送管理 > 接入设置下载配置文件
-import { ITimCoreLoginParams, ITimCoreProps } from './type'
+import { ITextPayload, ITimCoreLoginParams, ITimCoreProps } from './type'
+
 export default class TIMCore {
   public tim: ChatSDK | undefined
   public userID: string = ''
@@ -30,5 +31,44 @@ export default class TIMCore {
     // 登录SDK
     await this.tim?.login(options)
     this.userID = options.userID
+
+    this.bindTIMEvent()
+  }
+
+  // 绑定监听事件
+  private bindTIMEvent() {
+    this.tim?.on(TencentCloudChat.EVENT.SDK_READY, () => this.handleSDKReady, this)
+  }
+
+  private handleSDKReady() {
+    console.log('SDK Ready')
+
+    this.tim?.on(TencentCloudChat.EVENT.MESSAGE_RECEIVED, () => this.handleMessageReceived, this)
+  }
+  // 接受消息
+  private handleMessageReceived(event: any) {
+    console.log(event, '----event')
+  }
+  // 获得消息类型
+  private getMessageOptions(userID: string, payload: ITextPayload) {
+    return this.tim?.createTextMessage({
+      to: userID,
+      conversationType: TencentCloudChat.TYPES.CONV_C2C,
+      // 消息优先级，用于群聊。如果某个群的消息超过了频率限制，后台会优先下发高优先级的消息
+      // priority: TencentCloudChat.TYPES.MSG_PRIORITY_NORMAL,
+      payload,
+      // 如果您发消息需要已读回执，需购买旗舰版套餐，并且创建消息时将 needReadReceipt 设置为 true
+      needReadReceipt: true,
+      // 消息自定义数据（云端保存，会发送到对端，程序卸载重装后还能拉取到）
+      // cloudCustomData: 'your cloud custom data'
+    })
+  }
+
+  // 发送消息
+  public async sendMessage(userID: string, payload: ITextPayload) {
+    const messageOption = this.getMessageOptions(userID, payload)
+    await this.tim?.sendMessage(messageOption!)
+
+    console.log('发送成功')
   }
 }

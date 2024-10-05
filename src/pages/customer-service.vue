@@ -15,6 +15,59 @@ const chatInfo = ref([
     flow: 'out',
   },
   {
+    text: 'sdasdas11',
+    flow: 'in',
+  },
+
+  {
+    text: '11',
+    flow: 'out',
+  },
+  {
+    text: '11asds',
+    flow: 'out',
+  },
+  {
+    text: '11',
+    flow: 'out',
+  },
+  {
+    text: '11',
+    flow: 'out',
+  },
+  {
+    text: '11asds',
+    flow: 'out',
+  },
+  {
+    text: '11',
+    flow: 'out',
+  },
+  {
+    text: '11',
+    flow: 'out',
+  },
+  {
+    text: '11asds',
+    flow: 'out',
+  },
+  {
+    text: '11',
+    flow: 'out',
+  },
+  {
+    text: '11',
+    flow: 'out',
+  },
+  {
+    text: '11asds',
+    flow: 'out',
+  },
+  {
+    text: '11',
+    flow: 'out',
+  },
+  {
     text: '11',
     flow: 'out',
   },
