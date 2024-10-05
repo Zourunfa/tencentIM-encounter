@@ -12,6 +12,7 @@
     "@tencentcloud/chat": "^3.4.5",
     "ant-design-vue": "^4.2.5",
     "pinia": "^2.2.4",
+    "sass": "^1.79.4",
     "tim-js-sdk": "^2.27.6",
     "tim-upload-plugin": "^1.4.1",
     "vue": "^3.4.37",
