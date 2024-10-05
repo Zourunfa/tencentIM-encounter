@@ -1,9 +1,11 @@
 // img 核心功能
-import TencentCloudChat from '@tencentcloud/chat'
+import TencentCloudChat, { ChatSDK } from '@tencentcloud/chat'
 import TIMUploadPlugin from 'tim-upload-plugin'
 // import TIMPushAndroidConfig from './timpush-configs.json' // IM控制台 > 推送管理 > 接入设置下载配置文件
-import { ITimCoreProps } from './type'
+import { ITimCoreLoginParams, ITimCoreProps } from './type'
 export default class TIMCore {
+  public tim: ChatSDK | undefined
+  public userID: string = ''
   constructor(props: ITimCoreProps) {
     this.initTimSdk(props.SDKAppID)
   }
@@ -20,5 +22,13 @@ export default class TIMCore {
 
     // 注册腾讯云即时通信 IM 上传插件
     chat.registerPlugin({ 'tim-upload-plugin': TIMUploadPlugin })
+
+    this.tim = chat
+  }
+
+  public async timLogin(options: ITimCoreLoginParams) {
+    // 登录SDK
+    await this.tim?.login(options)
+    this.userID = options.userID
   }
 }

@@ -2,7 +2,10 @@
 import { reactive } from 'vue'
 import { Form as AForm, Card as ACard, FormItem as AFormItem, Input as AInput, InputPassword as AInputPassword, Button as AButton } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
+import { genTestUserSig } from './../../debug'
+import { useTIMStore } from '../store/chat'
 const $router = useRouter()
+const $TIMStore = useTIMStore()
 interface FormState {
   username: string
   password: string
@@ -14,7 +17,17 @@ const formState = reactive<FormState>({
 })
 
 const hanldeLogin = () => {
+  // 生成密钥
   $router.push('/home')
+  const { userSig } = genTestUserSig({
+    userID: formState.username,
+    SDKAppID: 1600055412,
+    secretKey: 'acc45cab4927f242868a6e0d420aa513adf389d8d7787947afdc2d0bca119075',
+  })
+  $TIMStore.timCore.timLogin({
+    userSig,
+    userID: formState.username,
+  })
 }
 </script>
 
