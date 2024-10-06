@@ -1,8 +1,11 @@
 // img 核心功能
-import TencentCloudChat, { ChatSDK } from '@tencentcloud/chat'
+import { ChatSDK } from '@tencentcloud/chat'
 import TIMUploadPlugin from 'tim-upload-plugin'
+
 // import TIMPushAndroidConfig from './timpush-configs.json' // IM控制台 > 推送管理 > 接入设置下载配置文件
 import { ITextPayload, ITimCoreLoginParams, ITimCoreProps } from './type'
+import TencentCloudChat from '@tencentcloud/chat'
+import TIM from 'tim-js-sdk'
 
 export default class TIMCore {
   public tim: ChatSDK | undefined
@@ -25,11 +28,35 @@ export default class TIMCore {
     chat.registerPlugin({ 'tim-upload-plugin': TIMUploadPlugin })
 
     this.tim = chat
+    // 持久化登录账号
+    this.persistedLogin()
+  }
+
+  private persistedLogin() {
+    const timCoreLoginParams = JSON.parse(localStorage.getItem('TIMCoreLoginParams') || '{}')
+
+    if (timCoreLoginParams && timCoreLoginParams.userID) {
+      this.timLogin(timCoreLoginParams)
+    }
+  }
+
+  public timLoginout() {
+    // 解绑事件
+    this.unBindTIMZEvent()
+    this.tim?.logout()
+    // localStorage.removeItem('TIMCoreLoginParams')
+  }
+
+  public unBindTIMZEvent() {
+    this.tim?.off(TencentCloudChat.EVENT.MESSAGE_RECEIVED, () => {})
+    this.tim?.off(TencentCloudChat.EVENT.SDK_READY, () => {})
   }
 
   public async timLogin(options: ITimCoreLoginParams) {
     // 登录SDK
     await this.tim?.login(options)
+
+    localStorage.setItem('TIMCoreLoginParams', JSON.stringify(options))
     this.userID = options.userID
 
     this.bindTIMEvent()
@@ -37,17 +64,20 @@ export default class TIMCore {
 
   // 绑定监听事件
   private bindTIMEvent() {
-    this.tim?.on(TencentCloudChat.EVENT.SDK_READY, () => this.handleSDKReady, this)
+    this.tim?.on(TencentCloudChat.EVENT.SDK_READY, this.handleSDKReady, this)
   }
 
   private handleSDKReady() {
     console.log('SDK Ready')
-    debugger
-    this.tim?.on(TencentCloudChat.EVENT.MESSAGE_RECEIVED, () => this.handleMessageReceived)
+
+    this.onReady()
+    this.tim?.on(TencentCloudChat.EVENT.MESSAGE_RECEIVED, this.handleMessageReceived, this)
+  }
+  public onReady() {
+    console.log('onReady')
   }
   // 接受消息
   private handleMessageReceived(event: any) {
-    debugger
     console.log(event, '----接受到一条消息')
     this.messageReceived(event)
   }
@@ -62,7 +92,7 @@ export default class TIMCore {
       to: userID,
       conversationType: TencentCloudChat.TYPES.CONV_C2C,
       // 消息优先级，用于群聊。如果某个群的消息超过了频率限制，后台会优先下发高优先级的消息
-      // priority: TencentCloudChat.TYPES.MSG_PRIORITY_NORMAL,
+      // priority: TIM.TYPES.MSG_PRIORITY_NORMAL,
       payload,
       // 如果您发消息需要已读回执，需购买旗舰版套餐，并且创建消息时将 needReadReceipt 设置为 true
       needReadReceipt: true,

@@ -82,6 +82,10 @@ const sendMsg = () => {
     text: chatMessage.value,
   })
 }
+// 准备完成后调用
+TIMStore.timCore.onReady = () => {
+  TIMStore.getSessionList()
+}
 </script>
 
 <template>

@@ -12,11 +12,11 @@ const $router = useRouter()
 const TIMStore = useTIMStore()
 // 订阅sdk 接受功能
 TIMStore.timCore.messageReceived = (event: TextMessageEvent) => {
-  debugger
   console.log(event, '----订阅接收')
   TIMStore.subscribeMessage(event)
 }
 const handleLoginOut = () => {
+  TIMStore.timCore.timLoginout()
   $router.push('/login')
 }
 </script>
