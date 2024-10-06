@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Card as ACard, Menu as AMenu, MenuItem as AMenuItem, Textarea as ATextarea } from 'ant-design-vue'
 import { ref } from 'vue'
+import { useTIMStore } from '../store/chat'
 const chatInfo = ref([
   {
     text: 'sdasdas11',
@@ -72,6 +73,15 @@ const chatInfo = ref([
     flow: 'out',
   },
 ])
+const chatMessage = ref('')
+
+const TIMStore = useTIMStore()
+const sendMsg = () => {
+  console.log(chatMessage.value)
+  TIMStore.timCore.sendMessage('admin', {
+    text: chatMessage.value,
+  })
+}
 </script>
 
 <template>
@@ -92,7 +102,7 @@ const chatInfo = ref([
             </div>
           </div>
         </div>
-        <a-textarea class="textarea" placeholder="发消息" :auto-size="{ minRows: 2, maxRows: 5 }" />
+        <a-textarea v-model:value="chatMessage" @pressEnter="sendMsg" class="textarea" placeholder="发消息" :auto-size="{ minRows: 2, maxRows: 5 }" />
       </div>
     </a-card>
   </div>

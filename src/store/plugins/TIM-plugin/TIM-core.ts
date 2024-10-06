@@ -42,12 +42,19 @@ export default class TIMCore {
 
   private handleSDKReady() {
     console.log('SDK Ready')
-
-    this.tim?.on(TencentCloudChat.EVENT.MESSAGE_RECEIVED, () => this.handleMessageReceived, this)
+    debugger
+    this.tim?.on(TencentCloudChat.EVENT.MESSAGE_RECEIVED, () => this.handleMessageReceived)
   }
   // 接受消息
   private handleMessageReceived(event: any) {
-    console.log(event, '----event')
+    debugger
+    console.log(event, '----接受到一条消息')
+    this.messageReceived(event)
+  }
+
+  // 对外暴露接受消息的方法
+  public messageReceived(event: any) {
+    console.log(event, '----接受到一条消息')
   }
   // 获得消息类型
   private getMessageOptions(userID: string, payload: ITextPayload) {

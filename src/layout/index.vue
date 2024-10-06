@@ -5,7 +5,17 @@ import { UserOutlined, VideoCameraOutlined, MenuUnfoldOutlined, MenuFoldOutlined
 const selectedKeys = ref<string[]>(['1'])
 const collapsed = ref<boolean>(false)
 import { useRouter } from 'vue-router'
+import { useTIMStore } from '../store/chat'
+import { TextMessageEvent } from '../store/plugins/TIM-plugin/type'
 const $router = useRouter()
+
+const TIMStore = useTIMStore()
+// 订阅sdk 接受功能
+TIMStore.timCore.messageReceived = (event: TextMessageEvent) => {
+  debugger
+  console.log(event, '----订阅接收')
+  TIMStore.subscribeMessage(event)
+}
 const handleLoginOut = () => {
   $router.push('/login')
 }
